@@ -379,4 +379,10 @@ class CodeForcesBenchmark(BaseBenchmark):
         self.logger.info("Loading CodeForces questions from source and converting to dataset...")
         ds = load_dataset("open-r1/codeforces", cache_dir=HF_HUB_CACHE)["test"].to_list()
         ds = [{**x, "difficulty": rating_to_difficulty(x["rating"])} for x in ds]
+        
+        # If in debug mode, only use first 2 examples
+        if self.debug:
+            ds = ds[:2]
+            
+        self.logger.info(f"Loaded {len(ds)} questions")
         return ds
