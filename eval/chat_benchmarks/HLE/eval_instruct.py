@@ -247,10 +247,5 @@ class HLESubsetBenchmark(BaseBenchmark):
         dataset = load_dataset("cais/hle", split="test", cache_dir=HF_HUB_CACHE)
         dataset = dataset.filter(lambda x: x["answer_type"] == "multipleChoice")
         dataset = dataset.filter(lambda x: x["image"] == "")
-        
-        # If in debug mode, only use first 2 examples
-        if self.debug:
-            dataset = dataset.select(range(min(2, len(dataset))))
-            
         self.logger.info(f"{len(dataset)} examples remaining after filtering for multiplechoice and no images.")
         return dataset
