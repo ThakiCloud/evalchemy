@@ -357,11 +357,6 @@ class LiveCodeBenchBenchmark(BaseBenchmark):
             trust_remote_code=True,
             cache_dir=HF_HUB_CACHE,
         )
-        
-        # If in debug mode, only use first 2 examples
-        if self.debug:
-            ds = ds.select(range(min(2, len(ds))))
-            
         # Avoids "pyarrow.lib.ArrowInvalid: offset overflow while concatenating arrays" when mapping
         processed_shards = []
         num_shards = 4
@@ -374,6 +369,4 @@ class LiveCodeBenchBenchmark(BaseBenchmark):
             shard = shard.map(map_to_example, remove_columns=ds.column_names)
             processed_shards.append(shard)
         ds = concatenate_datasets(processed_shards)
-        
-        self.logger.info(f"Loaded {len(ds)} questions")
         return ds

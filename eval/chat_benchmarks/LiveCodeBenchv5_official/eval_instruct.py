@@ -355,11 +355,6 @@ class LiveCodeBenchV5OfficialBenchmark(BaseBenchmark):
         cpu_count = os.cpu_count()
         lcb_codegen = load_dataset("livecodebench/code_generation_lite", version_tag="release_v5", cache_dir="./")['test']
         ds = lcb_codegen.filter(filter_by_contest_date)
-        
-        # If in debug mode, only use first 2 examples
-        if self.debug:
-            ds = ds.select(range(min(2, len(ds))))
-            
         processed_shards = []
         num_shards = 4
         for i in range(num_shards):
@@ -371,6 +366,4 @@ class LiveCodeBenchV5OfficialBenchmark(BaseBenchmark):
             shard = shard.map(map_to_example, remove_columns=ds.column_names)
             processed_shards.append(shard)
         ds = concatenate_datasets(processed_shards)
-        
-        self.logger.info(f"Loaded {len(ds)} questions")
         return ds

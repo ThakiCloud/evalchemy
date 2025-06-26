@@ -347,11 +347,6 @@ class LiveCodeBenchV5Benchmark(BaseBenchmark):
         self.logger.info("Loading LiveCodeBenchV5 questions from source and converting to dataset...")
         cpu_count = os.cpu_count()
         ds = load_dataset("mlfoundations-dev/LCBv5-v2", split="test", trust_remote_code=True, cache_dir=HF_HUB_CACHE)
-        
-        # If in debug mode, only use first 2 examples
-        if self.debug:
-            ds = ds.select(range(min(2, len(ds))))
-            
         # Avoids "pyarrow.lib.ArrowInvalid: offset overflow while concatenating arrays" when mapping
         processed_shards = []
         num_shards = 4
@@ -364,6 +359,4 @@ class LiveCodeBenchV5Benchmark(BaseBenchmark):
             shard = shard.map(map_to_example, remove_columns=ds.column_names)
             processed_shards.append(shard)
         ds = concatenate_datasets(processed_shards)
-        
-        self.logger.info(f"Loaded {len(ds)} questions")
         return ds
