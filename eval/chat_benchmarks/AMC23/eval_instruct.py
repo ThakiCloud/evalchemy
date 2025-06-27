@@ -171,6 +171,11 @@ class AMC23Benchmark(BaseBenchmark):
         """Load AMC23 questions from the data file."""
         with open(self.data_file, "r") as f:
             questions = [json.loads(x) for x in f]
+        
+        # If in debug mode, only use first 2 examples
+        if self.debug:
+            questions = questions[:2]
+            
         self.logger.info(f"Loaded {len(questions)} questions from {self.data_file}")
         return questions
 
